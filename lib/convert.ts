@@ -26,8 +26,33 @@ export async function romajiToKovalenko(text: string): Promise<string> {
     const convertKanji = await kuroshiro.convert(text, {
         to: 'romaji',
         romajiSystem: 'passport',
-    });
+});
+  
+export const applyKovalenkoNasalRules = (text: string): string => {
+  
+  let result = text;
 
+  // Pattern for 'n' followed by 'i' where 'n' is a separate syllable (ん)
+  result = result
+    .replace(/n'i/g, "н'ї")
+    .replace(/n'I/g, "н'Ї")
+    .replace(/N'i/g, "Н'ї")
+    .replace(/N'I/g, "Н'Ї")
+    
+    // Pattern for 'n' followed by 'e' where 'n' is a separate syllable (ん)
+    .replace(/n'e/g, "н'е")
+    .replace(/n'E/g, "н'Е")
+    .replace(/N'e/g, "Н'е")
+    .replace(/N'E/g, "Н'Е");
+  
+  return result;
+};
+
+export const convert = (input: string): string => {
+
+  const step1 = input.replace(/ん/g, "n'"); 
+  return applyKovalenkoNasalRules(step1);
+};
     const lowerRomaji = convertKanji.toLowerCase();
     let translated: string = '';
     let i: number = 0;
